@@ -188,8 +188,5 @@ RDPport=5000
 # set to "yes" if you want to boot the Fuel master node without the Fuel Menu. (enabling this will add an option "showmenu=no" to the kernel comdline so don't need to provide it below)
 skipfuelmenu="no"
 
-# use defaults from the isolinux.cfg if script started from the GitHub cloned repositoy files. otherwise use same defaults defined here.
-cmdline="$(grep 'append initrd' ../iso/isolinux/isolinux.cfg -m1 2>/dev/null | sed -e 's/^[ ]*append[ ]*//')"
-cmdline="${cmdline:-initrd=initrd.img net.ifnames=0 biosdevname=0 ks=hd:sr0:/ks.cfg ip=10.20.0.2::10.20.0.1:255.255.255.0:fuel.domain.tld:eth0:off::: dns1=10.20.0.1 selinux=0}"
-# if you want to override the defaults feel free to uncomment and edit the line below
-# cmdline="initrd=initrd.img net.ifnames=0 biosdevname=0 ks=hd:sr0:/ks.cfg ip=10.20.0.2::10.20.0.1:255.255.255.0:fuel.domain.tld:eth0:off::: dns1=10.20.0.1 selinux=0"
+# default cmdline parameters passed to the kernel when boot the Fuel Master node
+cmdline="initrd=initrd.img net.ifnames=0 biosdevname=0 ks=hd:sr0:/ks.cfg ip=10.20.0.2::10.20.0.1:255.255.255.0:fuel.domain.tld:eth0:off::: dns1=10.20.0.1"
