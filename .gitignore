@@ -1,0 +1,17 @@
+# vim swap files
+.*.swp
+
+# services' runtime files
+*.log
+*.pid
+
+# Vagrant housekeeping file
+/.vagrant
+
+/iso/*.iso
+lock
+
+.idea
+.DS_Store
+
+repomd.xml*
