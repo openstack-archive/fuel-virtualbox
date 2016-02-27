@@ -29,12 +29,36 @@ source ./functions/vm.sh
 source ./functions/network.sh
 source ./functions/shell.sh
 
+# Check for the 'dumpkeys.cache' file
+echo -n "Checking for 'dumpkeys.cache'... "
+if ! [ -f dumpkeys.cache ]; then
+  echo
+  echo
+  echo "The file 'dumpkeys.cache' shouldn't be removed from the main directory!"
+  case "$(uname)" in
+    CYGWIN*)
+      echo "Please restore it from the sources, it can't be recreated on this operating system."
+    ;;
+    *)
+      echo "Please restore it from the sources, or it can recreated using this command:"
+      echo "  sudo dumpkeys --keys-only > dumpkeys.cache"
+      echo "The 'dumpkeys' and 'sudo' should be installed first using your package manager."
+    ;;
+  esac
+  echo "Aborting."
+  exit 1
+else
+  echo "OK"
+fi
+
 # Check for procps package
 if [ "$(execute uname -s | cut -c1-6)" = "CYGWIN" ]; then
   echo -n "Checking for 'free'... "
   execute type free >/dev/null 2>&1
   if [ $? -eq 1 ]; then
-    echo "\"free\" is not available in the path, but it's required. Please install the \"procps\" package. Aborting."
+    echo
+    echo
+    echo "'free' is not available in the path, but it's required. Please install the 'procps' package. Aborting."
     exit 1
   else
     echo "OK"
@@ -45,7 +69,9 @@ fi
 echo -n "Checking for 'expect'... "
 execute type expect >/dev/null 2>&1
 if [ $? -eq 1 ]; then
-  echo "\"expect\" is not available in the path, but it's required. Please install Tcl \"expect\" package. Aborting."
+  echo
+  echo
+  echo "'expect' is not available in the path, but it's required. Please install Tcl 'expect' package. Aborting."
   exit 1
 else
   echo "OK"
@@ -55,17 +81,21 @@ fi
 echo -n "Checking for 'xxd'... "
 execute type xxd >/dev/null 2>&1
 if [ $? -eq 1 ]; then
-  echo "\"xxd\" is not available in the path, but it's required. Please install the \"xxd\" package. Aborting."
+  echo
+  echo
+  echo "'xxd' is not available in the path, but it's required. Please install the 'xxd' package. Aborting."
   exit 1
 else
   echo "OK"
 fi
 
 # Check for VirtualBox
-echo -n "Checking for \"VBoxManage\"... "
+echo -n "Checking for 'VBoxManage'... "
 execute type VBoxManage >/dev/null 2>&1
 if [ $? -eq 1 ]; then
-  echo "\"VBoxManage\" is not available in the path, but it's required. Likely, VirtualBox is not installed. Aborting."
+  echo
+  echo
+  echo "'VBoxManage' is not available in the path, but it's required. Likely, VirtualBox is not installed. Aborting."
   exit 1
 else
   echo "OK"
@@ -75,9 +105,13 @@ fi
 echo -n "Checking for VirtualBox Extension Pack... "
 extpacks=`execute VBoxManage list extpacks | grep 'Usable' | grep 'true' | wc -l`
 if [ "$extpacks" -le 0 ]; then
-    echo >&2 "VirtualBox Extension Pack is not installed. Please, download and install it from the official VirtualBox web site at https://www.virtualbox.org/wiki/Downloads"; exit 1;
+  echo
+  echo
+  echo "VirtualBox Extension Pack is not installed. Please, download and install it from the official VirtualBox web site at https://www.virtualbox.org/wiki/Downloads"
+  exit 1;
+else
+  echo "OK"
 fi
-echo "OK"
 
 # execute some checks only in the 'launch' mode
 if [ $1 == "launch" ]; then
@@ -103,11 +137,14 @@ fi
 # Check for ISO image to be available
 echo -n "Checking for Mirantis OpenStack ISO image... "
 if [ -z $iso_path ]; then
-    echo "Mirantis OpenStack image is not found. Please download it from software.mirantis.com and put under the 'iso' directory."
-    exit 1
+  echo
+  echo
+  echo "Mirantis OpenStack image is not found. Please download it from software.mirantis.com and put under the 'iso' directory."
+  exit 1
+else
+  echo "OK"
+  echo "Going to use Mirantis OpenStack ISO file: $iso_path"
 fi
-echo "OK"
-echo "Going to use Mirantis OpenStack ISO file $iso_path"
 
 # Copy ISO to host
 copy_if_required $iso_path
@@ -118,6 +155,8 @@ fi # end 'launch' mode check
 echo -n "Checking if SSH client installed... "
 execute type ssh >/dev/null 2>&1
 if [ $? -eq 1 ]; then
+  echo
+  echo
   echo "SSH client is not installed. Please install the \"openssh\" package if you run this script under Cygwin. Aborting."
   exit 1
 else
@@ -128,6 +167,8 @@ echo -n "Checking if ipconfig or ifconfig installed... "
 case "$(execute uname)" in
   Linux | Darwin)
     if ! execute test -x /sbin/ifconfig ; then
+      echo
+      echo
       echo "No ifconfig available at /sbin/ifconfig path! This path is hard-coded into VBoxNetAdpCtl utility."
       echo "Please install ifconfig or create symlink to proper interface configuration utility. Aborting."
       exit 1
@@ -138,11 +179,15 @@ case "$(execute uname)" in
     # It uses built-in Windows ipconfig utility instead.
     execute type ipconfig >/dev/null 2>&1
     if [ $? -eq 1 ]; then
+      echo
+      echo
       echo "No ipconfig available in Cygwin environment. Please check you can run ipconfig from Cygwin command prompt. Aborting."
       exit 1
     fi
   ;;
   *)
+    echo
+    echo
     echo "$(execute uname) is not supported operating system."
     exit 1
   ;;

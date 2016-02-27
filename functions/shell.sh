@@ -18,6 +18,8 @@
 # Each command might be executed on the local machine or on the remote machine
 # depending on environment settings
 
+[ "$(basename ${0})" = "shell.sh" ] && exit 1
+
 function execute() {
   #  use shell substitution pattern ${parameter/pattern/string}, to escape spaces in arguments.
   if [ -n "$REMOTE_HOST" ]; then

@@ -18,6 +18,8 @@
 # and Fuel became operational, and also enabling outbound network/internet access for this VM through the
 # host system
 
+[ "$(basename ${0})" = "product.sh" ] && exit 1
+
 source ./functions/shell.sh
 
 ssh_options='-oConnectTimeout=5 -oStrictHostKeyChecking=no -oCheckHostIP=no -oUserKnownHostsFile=/dev/null -oRSAAuthentication=no -oPubkeyAuthentication=no'

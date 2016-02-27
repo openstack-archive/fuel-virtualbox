@@ -16,6 +16,8 @@
 
 # This file contains the functions to get available memory on host PC
 
+[ "$(basename ${0})" = "memory.sh" ] && exit 1
+
 source ./functions/shell.sh
 
 get_available_memory() {

@@ -16,6 +16,8 @@
 
 # This file contains the functions to manage VMs in through VirtualBox CLI
 
+[ "$(basename ${0})" = "vm.sh" ] && exit 1
+
 source ./functions/shell.sh
 
 get_vm_base_path() {

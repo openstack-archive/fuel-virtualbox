@@ -16,6 +16,8 @@
 
 # This file contains the functions to manage host-only interfaces in the system
 
+[ "$(basename ${0})" = "network.sh" ] && exit 1
+
 source ./functions/shell.sh
 
 get_hostonly_interfaces() {
