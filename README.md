@@ -1,5 +1,14 @@
-VirtualBox enviropment kit
+Mirantis VirtualBox scripts
 ==========================
+
+Mirantis VirtualBox scripts is used to automated installation of the Fuel and
+Mirantis OpenStack (MOS). When you install Mirantis OpenStack using the
+Mirantis VirtualBox scripts, you do not need to configure the virtual machine
+network and hardware settings. The script provisions the virtual machines with
+all required settings automatically. However, you must place the latest
+Mirantis OpenStack ISO image in the iso directory. You may also modify the
+number of Fuel Slave Nodes using the config.sh script.
+
 
 Requirements
 ------------
@@ -11,31 +20,38 @@ Requirements
 - xxd
 - Cygwin for Windows host PC
 - Enable VT-x/AMD-V acceleration option on your hardware for 64-bits guests
+- Internet access should be enabled.
+
 
 Run
 ---
 
 In order to successfully run Mirantis OpenStack under VirtualBox, you need to:
 - download the official release (.iso) and place it under 'iso/' directory
-- run "./launch.sh" (or "./launch\_8GB.sh" or "./launch\_16GB.sh" according to your system resources). It will automatically pick up the iso and spin up master node and slave nodes
+- run "./launch.sh" (or "./launch\_8GB.sh" or "./launch\_16GB.sh" according
+to your system resources). It will automatically pick up the iso and spin up
+master node and slave nodes
 
-If you run this script under Cygwin, you may have to add path to VirtualBox directory to your PATH.
-Usually it is enough to run: export PATH=$PATH:/cygdrive/c/Program Files/Oracle/VirtualBox
+If you run this script under Cygwin, it will add the path to VirtualBox
+directory to your PATH automatically.
 
 If there are any errors, the script will report them and abort.
 
-If you want to change settings (number of OpenStack nodes, CPU, RAM, HDD), please refer to "config.sh".
+If you want to change settings (number of OpenStack nodes, CPU, RAM, HDD),
+please refer to "config.sh".
 
 To shutdown VMs and clean environment just run "./clean.sh"
 
-To deploy on a remote machine just set environment variable REMOTE_HOST with ssh connection string.
-The variable REMOTE_PORT allows to specify custom port for ssh.
+To deploy on a remote machine just set environment variable REMOTE_HOST with
+ssh connection string. The variable REMOTE_PORT allows to specify custom port
+for ssh.
 
 ```bash
  REMOTE_HOST=user@user.mos.mirantis.net ./launch_8GB.sh
 # or
  REMOTE_HOST=user@user.mos.mirantis.net REMOTE_PORT=23 ./launch_8GB.sh
 ```
+
 
 TODO
 ----
