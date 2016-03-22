@@ -186,7 +186,7 @@ headless=0
 RDPport=5000
 
 # set to "yes" if you want to boot the Fuel master node without the Fuel Menu. (enabling this will add an option "showmenu=no" to the kernel comdline so don't need to provide it below)
-skipfuelmenu="no"
+skipfuelmenu="yes"
 
 # default cmdline parameters passed to the kernel when boot the Fuel Master node
 cmdline="initrd=initrd.img net.ifnames=0 biosdevname=0 ks=hd:sr0:/ks.cfg ip=10.20.0.2::10.20.0.1:255.255.255.0:fuel.domain.tld:eth0:off::: dns1=10.20.0.1"
