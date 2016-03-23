@@ -24,7 +24,7 @@ get_available_memory() {
 local total_memory
   case $(execute uname) in
     Linux | CYGWIN*)
-      total_memory=$(execute LANG=C free | grep Mem | awk '{print $2}')
+      total_memory=$(execute LC_ALL=C free | grep Mem | awk '{print $2}')
     ;;
     Darwin)
       total_memory=$(execute sysctl -n hw.memsize)
