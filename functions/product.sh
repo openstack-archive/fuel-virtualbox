@@ -234,7 +234,7 @@ enable_outbound_network_for_product_vm() {
         expect "$prompt"
         send "/sbin/iptables -t nat -A POSTROUTING -j ext-nat-postrouting\r"
         expect "$prompt"
-        send "/sbin/iptables -t filter -A FORWARD -j ext-filter-forward\r"
+        send "/sbin/iptables -t filter -I FORWARD -j ext-filter-forward\r"
         expect "$prompt"
         send "service iptables save &>/dev/null\r"
         expect "$prompt"
