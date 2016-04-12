@@ -30,6 +30,7 @@ wait_for_exec_in_bootstrap() {
     password=$3
     prompt=$4
     cmd=$5
+    ignore_ssh_errors=$6
 
     # Log in into the VM, exec cmd and print exitcode
     # Looks a bit ugly, but 'end of expect' has to be in the very beginning of the line
@@ -49,6 +50,7 @@ wait_for_exec_in_bootstrap() {
 ENDOFEXPECT
     )
     echo "$result" | grep -q "[r]c=0" >&2 && return 0
+    [ -z "$ignore_ssh_errors" ] || return 0
     return 1
 }
 
@@ -84,7 +86,7 @@ wait_for_product_vm_to_install() {
 
     # Loop until master node gets successfully installed
     maxdelay=3000
-    while wait_for_exec_in_bootstrap $ip $username $password "$prompt" "ps xa | grep '\[b\]ootstrap_admin_node.sh'"; do
+    while wait_for_exec_in_bootstrap $ip $username $password "$prompt" "ps xa | grep '\[b\]ootstrap_admin_node.sh'" ignore_ssh_errors ; do
         sleep 5
         ((waited += 5))
         if (( waited >= maxdelay )); then
