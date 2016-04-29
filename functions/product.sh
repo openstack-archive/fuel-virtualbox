@@ -122,23 +122,23 @@ enable_outbound_network_for_product_vm() {
 
     # Check for internet access on the host system
     echo -n "Checking for internet connectivity on the host system... "
-    check_hosts=`echo google.com wikipedia.com | tr '  ' '\n'`
+    check_hosts=`echo http://google.com http://wikipedia.com | tr '  ' '\n'`
     case $(execute uname) in
         Linux | Darwin)
             for i in ${check_hosts} ; do
-                ping_host=`execute ping -c 2 ${i} | grep %`
+                ping_host=`execute curl ${i} > /dev/null`
                 ping_host_result+=$ping_host
             done
         ;;
         CYGWIN*)
             if [ ! -z "`execute type ping | grep system32`" ]; then
                 for i in ${check_hosts} ; do
-                    ping_host=`execute ping -n 5 ${i} | grep %`
+                    ping_host=`execute curl ${i} > /dev/null`
                     ping_host_result+=$ping_host
                 done
             elif [ ! -z "`execute type ping | grep bin`" ]; then
                 for i in ${check_hosts} ; do
-                    ping_host=`execute ping ${i} count 5 | grep %`
+                    ping_host=`execute curl ${i} > /dev/null`
                     ping_host_result+=$ping_host
                 done
             else
