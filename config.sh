@@ -190,3 +190,5 @@ skipfuelmenu="yes"
 
 # default cmdline parameters passed to the kernel when boot the Fuel Master node
 cmdline="initrd=initrd.img net.ifnames=0 biosdevname=0 ks=hd:sr0:/ks.cfg ip=10.20.0.2::10.20.0.1:255.255.255.0:fuel.domain.tld:eth0:off::: dns1=10.20.0.1"
+# If necessery uncomment and edit line below to add your public ssh key to the master node
+#public_key_file="~/.ssh/id_rsa.pub"
