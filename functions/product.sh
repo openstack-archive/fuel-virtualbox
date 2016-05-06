@@ -300,3 +300,31 @@ print_no_internet_connectivity_banner() {
     echo "#          because there is no Internet connectivity       #"
     echo "############################################################"
 }
+
+add_authorized_key() {
+    ip=$1
+    username=$2
+    password=$3
+    prompt=$4
+    key=$5
+
+    echo -n "Adding ssh key to authorized_keys at fuel master node..."
+
+    result=$(
+        execute expect << ENDOFEXPECT
+        spawn ssh $ssh_options $username@$ip
+        expect "connect to host" exit
+        expect "*?assword:*"
+        send "$password\r"
+        expect "$prompt"
+        send "mkdir ~/.ssh\r"
+        expect "$prompt"
+        send "echo \"$key\" >~/.ssh/authorized_keys\r"
+        expect "$prompt"
+        send "logout\r"
+        expect "$prompt"
+ENDOFEXPECT
+    )
+    echo "OK"
+    return 0
+}
