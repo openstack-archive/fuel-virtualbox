@@ -300,3 +300,31 @@ print_no_internet_connectivity_banner() {
     echo "#          because there is no Internet connectivity       #"
     echo "############################################################"
 }
+
+update_authorized_key() {
+    local ip=$1
+    local username=$2
+    local password=$3
+    local prompt=$4
+    local key=$5
+
+    echo -n "Adding public ssh key for '$username' on '$ip' node... "
+
+    result=$(
+        execute expect << ENDOFEXPECT
+        spawn ssh $ssh_options $username@$ip
+        expect "connect to host" exit
+        expect "*?assword:*"
+        send "$password\r"
+        expect "$prompt"
+        send "mkdir -p -m 0700 ~/.ssh\r"
+        expect "$prompt"
+        send "echo \"$key\" >>~/.ssh/authorized_keys\r"
+        expect "$prompt"
+        send "logout\r"
+        expect "$prompt"
+ENDOFEXPECT
+    )
+    echo "OK"
+    return 0
+}
