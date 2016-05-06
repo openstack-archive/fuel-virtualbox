@@ -49,6 +49,9 @@ if [ ${headless} -eq 1 ]; then
   enable_vrde $name ${RDPport}
 fi
 
+#add name of ISO file to description
+execute VBoxManage modifyvm $name --description${iso_path##*/}
+
 if [ "${skipfuelmenu}" = "yes" ]; then
     boot_line="$(translate " vmlinuz $cmdline wait_for_external_config=yes showmenu=no"$'\n')"
 else
