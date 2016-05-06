@@ -69,6 +69,11 @@ enable_outbound_network_for_product_vm $vm_master_ip $vm_master_username $vm_mas
 # Wait until the machine gets installed and Puppet completes its run
 wait_for_product_vm_to_install $vm_master_ip $vm_master_username $vm_master_password "$vm_master_prompt"
 
+#Add public key to authorized_keys
+if [ ${#public_key} -gt 0 ]; then
+  add_authorized_key $vm_master_ip $vm_master_username $vm_master_password "$vm_master_prompt" "$public_key"
+fi
+
 # Report success
 echo
 echo "Master node has been installed."
