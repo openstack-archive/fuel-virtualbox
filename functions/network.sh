@@ -153,10 +153,19 @@ create_hostonly_interfaces() {
   echo "Configuring IP address $ip and network mask $mask on interface: $name..."
   execute VBoxManage hostonlyif ipconfig "$id" --ip $ip --netmask $mask
   # Check what we have created actually.
-  # Sometimes VBox occasionally fails to apply settings to the last IFace under Windows
-  if !(check_if_iface_settings_applied "$id" $ip $mask); then
+  # Sometimes VBox occasionally fails to apply settings to the last IFace under Windows and CentOS
+  local count_set=0;
+  while [[ $count_set > 0 ]] && !(check_if_iface_settings_applied "$id" $ip $mask); do
+    count_set=$(($count_set-1));
+    echo
     echo "Looks like VirtualBox failed to apply settings for interface $name"
-    echo "Sometimes such error happens under Windows."
+    echo "Trying to apply network settings for interface $name one more time..."
+    echo "Configuring IP address $ip and network mask $mask on interface: $name..."
+    sleep ${net_sleep}
+    execute VBoxManage hostonlyif ipconfig "$id" --ip $ip --netmask $mask
+  done
+  if [[ $count_set == 0 ]] && !(check_if_iface_settings_applied "$id" $ip $mask); then
+    echo "Sometimes such error happens under Windows and CentOS."
     echo "Please run launch.sh one more time."
     echo "If this error remains after several attempts, then something really went wrong."
     echo "Aborting."
