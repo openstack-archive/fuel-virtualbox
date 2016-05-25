@@ -193,3 +193,7 @@ cmdline="initrd=initrd.img net.ifnames=0 biosdevname=0 ks=hd:sr0:/ks.cfg ip=10.2
 
 # If necessary uncomment and edit line below to add your public ssh key to the master node
 #public_key_file="${HOME}/.ssh/id_rsa.pub"
+
+# If you experience dramatical slowdown host while Openstack deploy, reduce
+# next value. See Virtualbox "CPU execution cap" setting for more information.
+cpu_execution_cap=100

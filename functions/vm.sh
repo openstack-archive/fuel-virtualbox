@@ -243,3 +243,10 @@ enable_vrde(){
     execute VBoxManage modifyvm $name --vrde on
     execute VBoxManage modifyvm $name --vrdeport $port
 }
+
+change_cpuexecutioncap (){
+    name=$1
+    cpu_e_cap=$2
+
+    execute VBoxManage modifyvm $name --cpuexecutioncap $cpu_e_cap
+}

@@ -22,50 +22,17 @@
 # Include the handy functions to operate VMs
 source ./config.sh
 source ./functions/vm.sh
-source ./functions/network.sh
 
-# Get variables "host_nic_name" for the slave nodes
-get_fuel_name_ifaces
+local local_cpu_execution_cap
+
+local_cpu_execution_cap=${1:-$cpu_execution_cap}
 
 # Create and start slave nodes
 for idx in $(eval echo {1..$cluster_size}); do
   name="${vm_name_prefix}slave-${idx}"
-  vm_ram=${vm_slave_memory_mb[$idx]}
-  [ -z $vm_ram ] && vm_ram=$vm_slave_memory_default
-  echo
-  vm_cpu=${vm_slave_cpu[$idx]}
-  [ -z $vm_cpu ] && vm_cpu=$vm_slave_cpu_default
-  echo
-  create_vm $name "${host_nic_name[0]}" $vm_cpu $vm_ram $vm_slave_first_disk_mb
-
-  # Add additional NICs to VM
-  if [ ${#host_nic_name[*]} -gt 1 ]; then
-    for nic in $(eval echo {1..$((${#host_nic_name[*]}-1))}); do
-      add_hostonly_adapter_to_vm $name $((nic+1)) "${host_nic_name[${nic}]}"
-    done
-  fi
-  # Add additional disks to VM
-  echo
-  add_disk_to_vm $name 1 $vm_slave_second_disk_mb
-  add_disk_to_vm $name 2 $vm_slave_third_disk_mb
-
-  #add NIC1 MAC to description
-  mac=$(execute VBoxManage showvminfo $name --machinereadable |awk -F '=' '{ if ($1 == "macaddress1") print $2}')
-  execute VBoxManage modifyvm $name --description $mac
-
-  #add RDP connection
-  if [ ${headless} -eq 1 ]; then
-    enable_vrde $name $((${RDPport} + idx))
-  fi
-
   #change cpuexecutioncap setting
-  change_cpuexecutioncap $name $cpu_execution_cap
-
-  enable_network_boot_for_vm $name
-
-  # The delay required for downloading tftp boot image
-  sleep 10
-  start_vm $name
+  echo "change CPU execution cap setting to $local_cpu_execution_cap on node $name..."
+  change_cpuexecutioncap $name $local_cpu_execution_cap
 done
 
 # Report success
