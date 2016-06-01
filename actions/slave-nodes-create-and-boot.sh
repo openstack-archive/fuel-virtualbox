@@ -49,6 +49,9 @@ for idx in $(eval echo {1..$cluster_size}); do
   add_disk_to_vm $name 1 $vm_slave_second_disk_mb
   add_disk_to_vm $name 2 $vm_slave_third_disk_mb
 
+  #add COM1 port for serial console
+  execute VBoxManage modifyvm $name --uart1 0x03f8 4 --uartmode1 disconnected
+
   #add NIC1 MAC to description
   mac=$(execute VBoxManage showvminfo $name --machinereadable |awk -F '=' '{ if ($1 == "macaddress1") print $2}')
   execute VBoxManage modifyvm $name --description $mac
