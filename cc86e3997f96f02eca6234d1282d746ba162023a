@@ -1,0 +1,9 @@
+Code-Review+2: Maksim Malchuk <mmalchuk@mirantis.com>
+Code-Review+1: Sergey Kulanov <skulanov@mirantis.com>
+Workflow+1: Maksim Malchuk <mmalchuk@mirantis.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Thu, 02 Jun 2016 08:51:39 +0000
+Reviewed-on: https://review.openstack.org/320535
+Project: openstack/fuel-virtualbox
+Branch: refs/heads/master
