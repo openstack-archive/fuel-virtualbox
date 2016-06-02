@@ -1,0 +1,82 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+#    Copyright 2016 Mirantis, Inc.
+#
+#    Licensed under the Apache License, Version 2.0 (the "License"); you may
+#    not use this file except in compliance with the License. You may obtain
+#    a copy of the License at
+#
+#         http://www.apache.org/licenses/LICENSE-2.0
+#
+#    Unless required by applicable law or agreed to in writing, software
+#    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+#    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+#    License for the specific language governing permissions and limitations
+#    under the License.
+
+import subprocess
+import sys
+
+commands = {
+    'reboot': 0x30,
+    'crash': 0x2e,
+    'terminate-all-tasks': 0x12,
+    'memory-full-oom-kill': 0x21,
+    'kill-all-tasks': 0x17,
+    'thaw-filesystems': 0x24,
+    'sak': 0x25,
+    'show-backtrace-all-active-cpus': 0x26,
+    'show-memory-usage': 0x32,
+    'nice-all-RT-tasks': 0x31,
+    'poweroff': 0x18,
+    'show-registers': 0x19,
+    'show-all-timers': 0x10,
+    'unraw': 0x13,
+    'sync': 0x1f,
+    'show-task-states': 0x14,
+    'unmount':  0x16,
+    'show-blocked-tasks': 0x11,
+    'dump-ftrace-buffer': 0x2c,
+    'loglevel-0': 0x0b,
+    'loglevel-1': 0x02,
+    'loglevel-2': 0x03,
+    'loglevel-3': 0x04,
+    'loglevel-4': 0x05,
+    'loglevel-5': 0x06,
+    'loglevel-6': 0x07,
+    'loglevel-7': 0x08,
+    'loglevel-8': 0x09,
+    'loglevel-9': 0x0a,
+}
+
+
+def usage():
+    print("Usage: vbox-sysrq <VM NAME> <COMMAND>\n\n"
+          "This tool is a helper for sending Alt+SysRq+<key> combination \n"
+          "to the guest OS in VirtualBox VM, which is used in Linux for \n"
+          "printing different sorts of debug messages to the kernel log, \n"
+          "like list of processes, stack traces of CPUs and so on, or for \n"
+          "performing actions: reboot, sync e.t.c. It's very useful when \n"
+          "all other ways to communicate to the VM become unavailable.\n\n"
+          "Please, set sysctl kernel.sysrq to 1 in the guest OS to make all \n"
+          "sysrq commands available:\n\t"
+          "sysctl -w kernel.sysrq=1 # in the guest OS\n\n"
+          "Examples of usage (useful for fuel developers):\n\n"
+          "Increase log verbosity:\n\t"
+          "send-sysrq fuel-slave-1 loglevel-7\n\n"
+          "Print processes information to the kernel log:\n\t"
+          "send-sysrq fuel-slave-1 show-task-states\n\n"
+          "Print verbose memory usage to the kernel log:\n\t"
+          "send-sysrq fuel-slave-1 show-memory-usage\n\n"
+          "Print, what system is doing right now:\n\t"
+          "send-sysrq fuel-slave-1 show-registers\n\n\n"
+          "Commands:\n\t%s""" % '\n\t'.join(sorted(commands.keys())))
+
+if len(sys.argv) != 3 or sys.argv[2] not in commands:
+    usage()
+    sys.exit(1)
+
+code = commands[sys.argv[2]]
+subprocess.call(['VBoxManage', 'controlvm', sys.argv[1], 'keyboardputscancode',
+                 '1d', '38', '54', '%.2x' % code,
+                 '%x' % (code + 0x80), 'd4', 'b8', '9d'])
