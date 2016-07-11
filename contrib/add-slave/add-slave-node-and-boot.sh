@@ -23,6 +23,10 @@
 source ./config.sh
 source ./functions/vm.sh
 source ./functions/network.sh
+source ./functions/shell.sh
+
+# Add VirtualBox directory to PATH
+add_virtualbox_path
 
 # Get variables "host_nic_name" for the slave node
 get_fuel_name_ifaces
@@ -74,7 +78,7 @@ execute VBoxManage modifyvm $name --uart1 0x03f8 4 --uartmode1 disconnected
 # Add NIC1 MAC to description
 mac=$(execute VBoxManage showvminfo $name --machinereadable | grep '^macaddress1=' | cut -d'"' -f2)
 if [ -n "${mac}" ]; then
-  mac_address=$(echo $mac | sed 's/..\B/&:/g;s/./\L&/g')
+  mac_address=$(echo $mac | sed 's/.\{2\}/&:/g;s/:$//' | tr '[:upper:]' '[:lower:]')
   execute VBoxManage modifyvm $name --description "${mac}"
 fi
 
