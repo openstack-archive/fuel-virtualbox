@@ -74,7 +74,7 @@ execute VBoxManage modifyvm $name --uart1 0x03f8 4 --uartmode1 disconnected
 # Add NIC1 MAC to description
 mac=$(execute VBoxManage showvminfo $name --machinereadable | grep '^macaddress1=' | cut -d'"' -f2)
 if [ -n "${mac}" ]; then
-  mac_address=$(echo $mac | sed 's/..\B/&:/g;s/./\L&/g')
+  mac_address=$(echo $mac | sed 's/.\{2\}/&:/g;s/:$//')
   execute VBoxManage modifyvm $name --description "${mac}"
 fi
 
@@ -97,6 +97,6 @@ echo "Please wait while the slave node appears in the list of the available node
 echo "You can use the command 'fuel node' on the Fuel master node to check the list of available nodes."
 
 if [ -n "${mac}" ]; then
-  echo "The MAC address of the new node is: '${mac_address}'."
+  echo "The MAC address of the new node is: '${mac_address,,}'."
 fi
 echo
