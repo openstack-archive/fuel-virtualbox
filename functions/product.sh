@@ -164,10 +164,18 @@ enable_outbound_network_for_product_vm() {
       nameserver="$(execute grep '^nameserver' /etc/resolv.conf | egrep -v 'nameserver\s*(127\.|.*:)' | head -3)"
     fi
     if [ -z "$nameserver" ] && execute test -x /usr/bin/nmcli; then
+      #
+      if [ -z "`execute LANG=C nmcli nm help 2>&1 | grep \"Error\"`" ]; then
+        nmcli_status="nm"
+        nmcli_settings="list"
+      else
+        nmcli_status="general"
+        nmcli_settings="show"
+      fi
       # Get DNS from network manager
-      if [ -n "`execute LANG=C nmcli nm | grep \"running\s\+connected\"`" ]; then
+      if [ -n "`execute LANG=C nmcli ${nmcli_status} | grep \"\bconnected\"`" ]; then
         # we should exclude loopback and IPv6 addresses from the nameservers list
-        nameserver="$(execute nmcli dev list | grep 'IP[46].DNS' | sed -e 's/IP[46]\.DNS\[[0-9]\+\]:\s\+/nameserver /'| grep -v 'nameserver\s*(127\.|.*:)' | head -3)"
+        nameserver="$(execute nmcli device ${nmcli_settings} | grep 'IP[46].DNS' | sed -e 's/IP[46]\.DNS\[[0-9]\+\]:\s\+/nameserver /'| grep -v 'nameserver\s*(127\.|.*:)' | head -3)"
       fi
     fi
     if [ -z "$nameserver" ]; then
