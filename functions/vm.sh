@@ -100,6 +100,9 @@ create_vm() {
     # Set video memory to 16MB, so VirtualBox does not complain about "non-optimal" settings in the UI
     execute VBoxManage modifyvm $name --rtcuseutc on --memory $memory_mb --cpus $cpu_cores --vram 16
 
+    # Disable audio totally because not supported in the Fuel
+    execute VBoxManage modifyvm $name --audio "none"
+
     # Configure main network interface for management/PXE network
     add_hostonly_adapter_to_vm $name 1 "${nic}"
     execute VBoxManage modifyvm $name --boot1 disk --boot2 dvd --boot3 net --boot4 none
